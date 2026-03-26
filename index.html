@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Birthday Coach Saab! 🏏</title>
+    <title>Happy Birthday Coach Saab! 🏏✨</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         body {
@@ -13,154 +13,183 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background: radial-gradient(circle, #4caf50, #1b3312);
-            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #1b3312 0%, #4caf50 100%);
+            font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
             overflow: hidden;
             color: white;
             touch-action: manipulation;
         }
 
-        #game-info {
+        /* Floating Background Emojis */
+        .floating-emoji {
             position: absolute;
+            font-size: 30px;
+            opacity: 0.25;
+            animation: floatUp 8s linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes floatUp {
+            from { transform: translateY(110vh) rotate(0deg); }
+            to { transform: translateY(-10vh) rotate(360deg); }
+        }
+
+        /* Music Controls */
+        .music-btn {
+            position: fixed;
             top: 20px;
-            text-align: center;
+            right: 20px;
             z-index: 100;
-            background: rgba(0,0,0,0.6);
-            padding: 10px 20px;
-            border-radius: 20px;
-            border: 1px solid #ffd700;
-            width: 80%;
-            max-width: 300px;
-        }
-
-        #cricket-ball {
-            position: absolute;
-            font-size: 50px;
+            background: white;
+            border: none;
+            padding: 12px;
+            border-radius: 50%;
             cursor: pointer;
-            z-index: 99;
-            user-select: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            font-size: 22px;
         }
 
-        /* Container to keep everything centered and visible */
-        .letter-container {
+        #game-ui {
+            z-index: 50;
+            text-align: center;
+            background: rgba(0,0,0,0.5);
+            padding: 15px 20px;
+            border-radius: 25px;
+            border: 2px solid #ffd700;
+            margin-bottom: 30px;
+        }
+
+        #ball-target {
+            position: absolute;
+            font-size: 55px;
+            cursor: pointer;
+            z-index: 90;
+            user-select: none;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
+        }
+
+        /* Letter & Envelope Setup */
+        .letter-area {
             position: relative;
             width: 300px;
             height: 200px;
-            margin-top: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .envelope {
-            position: absolute;
+            position: relative;
             width: 100%;
             height: 100%;
             background: #d32f2f;
-            border-radius: 0 0 10px 10px;
-            z-index: 10;
+            border-radius: 0 0 15px 15px;
+            z-index: 20;
             cursor: pointer;
-            opacity: 0.2; /* Starts locked */
-            transition: 0.5s;
+            opacity: 0.15;
+            transition: 0.5s all;
+            border: 4px solid rgba(255,255,255,0.3);
         }
 
-        .envelope.unlocked { opacity: 1; box-shadow: 0 0 25px #ffd700; }
+        .unlocked.envelope { opacity: 1; box-shadow: 0 0 40px #ffd700; }
 
         .envelope:before {
             content: "";
             position: absolute;
-            top: 0;
+            top: -4px;
             left: 0;
             border-left: 150px solid transparent;
             border-right: 150px solid transparent;
-            border-top: 100px solid #b71c1c;
+            border-top: 115px solid #b71c1c;
             transform-origin: top;
-            transition: 0.5s;
-            z-index: 11;
+            transition: 0.6s;
+            z-index: 22;
         }
 
         .open.envelope:before { transform: rotateX(180deg); z-index: 5; }
 
-        /* FIXED CARD: Now scrollable and fits screen */
+        /* THE CARD */
         .card {
             position: absolute;
-            width: 270px;
-            /* Card height is limited so it doesn't go off screen */
-            height: 320px;
-            background: white;
-            left: 15px;
-            bottom: 10px;
-            border-radius: 8px;
-            padding: 20px;
-            transition: 0.8s;
-            z-index: 6;
-            text-align: center;
+            width: 280px;
+            height: 360px;
+            background: #fff;
+            border-radius: 20px;
+            padding: 30px 20px;
+            z-index: 15;
             color: #333;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+            transition: 0.8s transform cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: translateY(0);
             box-sizing: border-box;
-            /* Allow scrolling inside the card */
             overflow-y: auto;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             visibility: hidden;
-            opacity: 0;
         }
 
         .open .card {
             visibility: visible;
-            opacity: 1;
-            /* Slides up just enough to be seen clearly */
-            transform: translateY(-200px);
+            transform: translateY(-230px);
         }
+
+        .character {
+            font-size: 65px;
+            margin-bottom: 5px;
+            animation: celebrate 1s infinite alternate;
+        }
+
+        @keyframes celebrate {
+            from { transform: scale(1); }
+            to { transform: scale(1.15) rotate(5deg); }
+        }
+
+        h2 { color: #d32f2f; margin: 10px 0; font-size: 24px; font-weight: bold; }
+        p { line-height: 1.7; font-size: 18px; margin: 15px 0; }
 
         .heart-seal {
             position: absolute;
-            top: 30%;
+            top: 40%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 40px;
-            z-index: 12;
-        }
-
-        .float-item {
-            position: absolute;
-            opacity: 0.3;
-            animation: float 10s linear infinite;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(110vh) rotate(0deg); }
-            100% { transform: translateY(-10vh) rotate(360deg); }
+            font-size: 45px;
+            z-index: 23;
         }
     </style>
 </head>
 <body>
 
-    <div id="game-info">
-        <h3 id="msg" style="margin: 0; font-size: 16px;">Coach Saab, hit the ball 5 times! 🏏</h3>
-        <div id="score-bar" style="font-size: 14px; color: #ffd700;">Score: <span id="score">0</span>/5</div>
+    <button class="music-btn" onclick="toggleMusic()">🎵</button>
+    <audio id="bg-music" loop>
+        <source src="https://www.chosic.com/wp-content/uploads/2021/07/Warm-Uptempo-Happy-Lofi.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="game-ui">
+        <p id="hint" style="margin: 0; font-size: 18px;">Tap the ball 5 times, Coach Saab! 🏏</p>
+        <div style="color: #ffd700; font-weight: bold; font-size: 20px;">Score: <span id="hits">0</span>/5</div>
     </div>
 
-    <div id="cricket-ball">⚾</div>
+    <div id="ball-target">⚾</div>
 
-    <div class="letter-container" id="wrapper">
-        <div class="envelope" id="envelope" onclick="openLetter()">
+    <div class="letter-area">
+        <div class="envelope" id="env" onclick="openCard()">
             <div class="heart-seal">❤️</div>
             <div class="card">
-                <div style="font-size: 40px;">🏆</div>
-                <h2 style="color: #d32f2f; margin: 10px 0;">Happy Birthday Coach Saab</h2>
-                <p style="font-size: 16px; line-height: 1.5;">
+                <div class="character">🏆🏏❤️</div>
+                <h2>Happy Birthday Coach Saab</h2>
+                <p>
                     Wishing you lots of love, laughter and you make life sweeter just by being you. 🎂💫
                 </p>
-                <hr style="border:0; border-top: 1px solid #eee;">
-                <p style="font-size: 14px; font-style: italic; color: #666;">
-                    Even if we don't end up together, knowing you meant something real to me—and it always will.
-                </p>
-                <div style="font-size: 30px; margin-top: 10px;">🏏💖</div>
+                <div style="font-size: 40px; margin-top: 15px;">🌟🥳🎉</div>
             </div>
         </div>
     </div>
 
     <script>
         let score = 0;
-        const ball = document.getElementById('cricket-ball');
-        const envelope = document.getElementById('envelope');
-        const msg = document.getElementById('msg');
+        const ball = document.getElementById('ball-target');
+        const env = document.getElementById('env');
+        const hitsDisplay = document.getElementById('hits');
+        const music = document.getElementById('bg-music');
 
         function moveBall() {
             const x = Math.random() * (window.innerWidth - 80);
@@ -171,32 +200,42 @@
 
         ball.addEventListener('click', () => {
             score++;
-            document.getElementById('score').innerText = score;
+            hitsDisplay.innerText = score;
             if (score < 5) {
                 moveBall();
             } else {
                 ball.style.display = 'none';
-                envelope.classList.add('unlocked');
-                msg.innerText = "Century! 💯 Open your gift!";
-                confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+                env.classList.add('unlocked');
+                document.getElementById('hint').innerText = "CHAMPION! 💯 Open your letter!";
+                confetti({
+                    particleCount: 200,
+                    spread: 80,
+                    origin: { y: 0.6 },
+                    colors: ['#ff0000', '#ffffff', '#ffd700', '#4caf50']
+                });
             }
         });
 
-        function openLetter() {
-            if (envelope.classList.contains('unlocked')) {
-                envelope.classList.toggle('open');
+        function openCard() {
+            if (env.classList.contains('unlocked')) {
+                env.classList.toggle('open');
             }
         }
 
-        // Floating Background
-        const items = ['🏏', '⚾', '❤️', '✨'];
-        for (let i = 0; i < 15; i++) {
-            const el = document.createElement('div');
-            el.className = 'float-item';
-            el.innerText = items[Math.floor(Math.random() * items.length)];
-            el.style.left = Math.random() * 100 + 'vw';
-            el.style.animationDuration = (Math.random() * 5 + 5) + 's';
-            document.body.appendChild(el);
+        function toggleMusic() {
+            if (music.paused) { music.play(); } else { music.pause(); }
+        }
+
+        // Animated Background Elements
+        const deco = ['🏏', '🏆', '❤️', '⚾', '✨', '🎈'];
+        for (let i = 0; i < 20; i++) {
+            const d = document.createElement('div');
+            d.className = 'floating-emoji';
+            d.innerText = deco[Math.floor(Math.random() * deco.length)];
+            d.style.left = Math.random() * 100 + 'vw';
+            d.style.animationDuration = (Math.random() * 6 + 4) + 's';
+            d.style.animationDelay = (Math.random() * 5) + 's';
+            document.body.appendChild(d);
         }
 
         moveBall();
