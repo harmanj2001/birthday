@@ -3,188 +3,222 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For Shivam 🎈</title>
+    <title>A Challenge for Shivam 🎂</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
-        :root {
-            --primary: #ff4b5c;
-            --secondary: #ff8fab;
-            --bg: #f0f4ff;
-        }
-
         body {
             margin: 0;
             height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            background: var(--bg);
-            font-family: 'Inter', -apple-system, sans-serif;
+            background: radial-gradient(circle, #2c3e50, #000000);
+            font-family: 'Georgia', serif;
             overflow: hidden;
+            color: white;
         }
 
-        /* Floating Balloons Background */
-        .balloon {
+        /* Game Overlay */
+        #game-ui {
             position: absolute;
-            bottom: -100px;
-            font-size: 30px;
-            animation: floatUp 8s linear infinite;
-            z-index: 1;
+            top: 20px;
+            text-align: center;
+            z-index: 100;
+            transition: opacity 0.5s;
         }
 
-        @keyframes floatUp {
-            to { transform: translateY(-110vh) translateX(50px); opacity: 0; }
+        #target {
+            position: absolute;
+            font-size: 50px;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+            z-index: 99;
         }
 
-        .container { position: relative; z-index: 10; perspective: 1000px; }
+        .progress-container {
+            width: 200px;
+            height: 10px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 5px;
+            margin-top: 10px;
+        }
 
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background: #ff4b5c;
+            border-radius: 5px;
+            transition: width 0.3s;
+        }
+
+        /* Envelope Styles */
         .envelope-wrapper {
             position: relative;
-            width: 320px;
-            height: 220px;
-            background: var(--secondary);
-            border-radius: 0 0 15px 15px;
+            width: 300px;
+            height: 200px;
+            background: #ff8fab;
+            border-radius: 0 0 10px 10px;
+            cursor: not-allowed;
+            opacity: 0.3;
+            transition: all 0.5s;
+            transform: scale(0.8);
+        }
+
+        .envelope-wrapper.unlocked {
+            opacity: 1;
             cursor: pointer;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            transition: all 0.4s ease;
+            transform: scale(1);
+            box-shadow: 0 0 20px #ff4b5c;
         }
 
-        .envelope-wrapper:hover {
-            transform: translateY(-10px) rotate(1deg);
-            box-shadow: 0 30px 50px rgba(255, 75, 92, 0.2);
-        }
-
-        /* The Flap */
         .envelope-wrapper:before {
             content: "";
             position: absolute;
             top: 0;
             left: 0;
-            border-left: 160px solid transparent;
-            border-right: 160px solid transparent;
-            border-top: 120px solid #fb6f92;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-top: 100px solid #fb6f92;
             transform-origin: top;
-            transition: all 0.5s ease;
+            transition: 0.5s;
             z-index: 5;
         }
 
-        .envelope-wrapper.open:before {
-            transform: rotateX(180deg);
-            z-index: 1;
-        }
+        .envelope-wrapper.open:before { transform: rotateX(180deg); z-index: 1; }
 
-        /* The Card */
         .card {
             position: absolute;
-            width: 290px;
-            height: 380px;
+            width: 270px;
+            height: 350px;
             background: white;
             bottom: 10px;
             left: 15px;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 10px;
+            padding: 20px;
+            transition: 0.8s;
             z-index: 2;
             text-align: center;
-            box-sizing: border-box;
+            color: #333;
             opacity: 0;
+            box-sizing: border-box;
         }
 
-        .envelope-wrapper.open .card {
-            transform: translateY(-280px);
-            opacity: 1;
-        }
+        .envelope-wrapper.open .card { transform: translateY(-250px); opacity: 1; }
 
         .heart-seal {
             position: absolute;
-            top: 40px;
+            top: -20px;
             left: 50%;
             transform: translateX(-50%);
-            width: 50px;
-            height: 50px;
-            background: var(--primary);
-            border-radius: 50%;
+            font-size: 40px;
             z-index: 6;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            animation: pulse 2s infinite;
+            color: #ff4b5c;
         }
 
-        @keyframes pulse {
-            0% { transform: translateX(-50%) scale(1); }
-            50% { transform: translateX(-50%) scale(1.1); }
-            100% { transform: translateX(-50%) scale(1); }
-        }
-
-        .envelope-wrapper.open .heart-seal { display: none; }
-
-        h1 { color: var(--primary); font-size: 22px; margin-top: 0; }
-        p { color: #444; line-height: 1.6; font-size: 15px; }
-
-        .music-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
+        /* Twinkling Stars */
+        .star {
+            position: absolute;
             background: white;
-            border: none;
-            padding: 12px;
             border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            z-index: 100;
+            animation: twinkle var(--duration) infinite;
         }
 
-        .character { font-size: 40px; margin: 15px 0; }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
     </style>
 </head>
 <body>
 
-    <button class="music-toggle" onclick="toggleMusic()">🎵</button>
-    <audio id="bday-music" loop>
-        <source src="https://www.chosic.com/wp-content/uploads/2021/05/Warm-Light.mp3" type="audio/mpeg">
-    </audio>
+    <div id="game-ui">
+        <h3 id="instruction">Tap the cake 5 times to unlock your message! 🎂</h3>
+        <div class="progress-container">
+            <div id="progress-bar"></div>
+        </div>
+    </div>
 
-    <div class="container">
-        <div class="envelope-wrapper" id="envelope" onclick="openLetter()">
-            <div class="heart-seal">❤</div>
-            <div class="card">
-                <div class="character">🥳</div>
-                <h1>Happy Birthday Shivam!</h1>
-                <p>I hope this year brings you growth, happiness, and everything you've been working toward.</p>
-                <p>You deserve success in every way, and I'll always be quietly cheering you on.</p>
-                <p>Knowing you meant something real to me—and it always will. ✨</p>
-                <p style="font-size: 12px; color: #999;">(Click anywhere to close)</p>
-            </div>
+    <div id="target">🎂</div>
+
+    <div class="envelope-wrapper" id="envelope" onclick="openLetter()">
+        <div class="heart-seal">❤</div>
+        <div class="card">
+            <h2 style="color: #ff4b5c;">Happy Birthday Shivam!</h2>
+            <p style="font-size: 14px; line-height: 1.5;">
+                I hope this year brings you growth, happiness, and everything you've been working toward.
+            </p>
+            <p style="font-size: 14px;">
+                You deserve success in every way, and I'll always be quietly cheering you on.
+            </p>
+            <p style="font-size: 14px; font-weight: bold;">
+                Knowing you meant something real to me—and it always will. ✨
+            </p>
+            <div style="font-size: 30px; margin-top: 10px;">🧸</div>
         </div>
     </div>
 
     <script>
-        // Create random balloons
-        const emojis = ['🎈', '✨', '🎂', '💖', '🍭'];
-        function createBalloon() {
-            const b = document.createElement('div');
-            b.className = 'balloon';
-            b.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-            b.style.left = Math.random() * 100 + 'vw';
-            b.style.animationDuration = (Math.random() * 4 + 6) + 's';
-            document.body.appendChild(b);
-            setTimeout(() => b.remove(), 8000);
+        let score = 0;
+        const target = document.getElementById('target');
+        const progressBar = document.getElementById('progress-bar');
+        const envelope = document.getElementById('envelope');
+        const gameUI = document.getElementById('game-ui');
+
+        // Move the cake to a random spot
+        function moveTarget() {
+            const x = Math.random() * (window.innerWidth - 100);
+            const y = Math.random() * (window.innerHeight - 100);
+            target.style.left = x + 'px';
+            target.style.top = y + 'px';
         }
-        setInterval(createBalloon, 800);
+
+        target.addEventListener('click', () => {
+            score++;
+            progressBar.style.width = (score / 5) * 100 + '%';
+            
+            if (score < 5) {
+                moveTarget();
+            } else {
+                unlock();
+            }
+        });
+
+        function unlock() {
+            target.style.display = 'none';
+            gameUI.style.opacity = '0';
+            envelope.classList.add('unlocked');
+            document.getElementById('instruction').innerText = "Unlocked! Click the envelope.";
+            gameUI.style.opacity = '1';
+            
+            confetti({
+                particleCount: 150,
+                spread: 100,
+                origin: { y: 0.6 }
+            });
+        }
 
         function openLetter() {
-            const el = document.getElementById('envelope');
-            const isOpen = el.classList.contains('open');
-            
-            el.classList.toggle('open');
+            if (envelope.classList.contains('unlocked')) {
+                envelope.classList.toggle('open');
+            }
+        }
 
-            if (!isOpen) {
-                // Confetti Burst!
-                confetti({
-                    particleCount: 150,
-                    spread: 7
+        // Create Stars
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 3;
+            star.style.width = size + 'px';
+            star.style.height = size + 'px';
+            star.style.left = Math.random() * 100 + 'vw';
+            star.style.top = Math.random() * 100 + 'vh';
+            star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
+            document.body.appendChild(star);
+        }
+
+        moveTarget();
+    </script>
+</body>
+</html>
