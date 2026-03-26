@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coach Saab's Big Day! 🏏✨</title>
+    <title>Coach Saab's Match Day! 🏏</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         body {
@@ -14,56 +14,46 @@
             justify-content: center;
             align-items: center;
             background: linear-gradient(135deg, #1b3312 0%, #4caf50 100%);
-            font-family: 'Arial Rounded MT Bold', 'Helvetica', sans-serif;
+            font-family: 'Arial Rounded MT Bold', sans-serif;
             overflow: hidden;
             color: white;
-            touch-action: manipulation;
         }
 
-        /* Floating Animation Elements */
-        .floating-emoji {
-            position: absolute;
-            font-size: 35px;
-            opacity: 0.3;
-            animation: floatUp 7s linear infinite;
-            z-index: 1;
-        }
-
-        @keyframes floatUp {
-            from { transform: translateY(110vh) rotate(0deg); }
-            to { transform: translateY(-15vh) rotate(360deg); }
-        }
-
-        /* Music Pulsing Button */
-        .music-btn {
+        /* --- INTRO SCREEN --- */
+        #intro-screen {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 100;
-            background: #ffd700;
-            border: 3px solid white;
-            padding: 15px;
-            border-radius: 50%;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            transition: 0.5s;
+        }
+
+        .umpire {
+            font-size: 80px;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
-            font-size: 24px;
-            animation: pulse-music 2s infinite;
+            animation: bounce 2s infinite;
         }
 
-        @keyframes pulse-music {
-            0% { transform: scale(1); box-shadow: 0 0 0 0px rgba(255, 215, 0, 0.7); }
-            70% { transform: scale(1.1); box-shadow: 0 0 0 15px rgba(255, 215, 0, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0px rgba(255, 215, 0, 0); }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
         }
 
+        /* --- GAME UI --- */
         #game-ui {
             z-index: 50;
             text-align: center;
             background: rgba(0,0,0,0.6);
-            padding: 20px;
+            padding: 15px 25px;
             border-radius: 25px;
             border: 3px solid #ffd700;
             margin-bottom: 20px;
+            display: none; /* Hidden until intro clicked */
         }
 
         #ball-target {
@@ -71,11 +61,10 @@
             font-size: 60px;
             cursor: pointer;
             z-index: 90;
-            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.6));
-            user-select: none;
+            display: none;
         }
 
-        /* The Envelope */
+        /* --- ENVELOPE & CARD --- */
         .letter-area {
             position: relative;
             width: 320px;
@@ -112,7 +101,6 @@
 
         .open.envelope:before { transform: rotateX(180deg); z-index: 5; }
 
-        /* THE CARD */
         .card {
             position: absolute;
             width: 300px;
@@ -126,7 +114,7 @@
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
             transition: 0.9s transform cubic-bezier(0.175, 0.885, 0.32, 1.275);
             box-sizing: border-box;
-            overflow: hidden;
+            overflow-y: auto;
             visibility: hidden;
         }
 
@@ -135,40 +123,41 @@
             transform: translateY(-260px);
         }
 
-        /* Animated Cartoon Characters */
         .squad { display: flex; justify-content: center; gap: 15px; margin-bottom: 10px; }
-        .character {
-            font-size: 50px;
-            animation: dance 1s infinite alternate;
-        }
-        .char-2 { animation-delay: 0.2s; }
-        .char-3 { animation-delay: 0.4s; }
+        .character { font-size: 50px; animation: dance 1s infinite alternate; }
 
         @keyframes dance {
             from { transform: translateY(0) rotate(-10deg); }
-            to { transform: translateY(-20px) rotate(10deg); }
+            to { transform: translateY(-15px) rotate(10deg); }
         }
 
-        h2 { color: #d32f2f; font-size: 24px; margin: 10px 0; }
-        p { font-size: 18px; line-height: 1.6; }
-
-        .heart-seal {
-            position: absolute;
-            top: 40%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 50px;
-            z-index: 23;
+        .music-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 300;
+            background: #ffd700;
+            border: none;
+            padding: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
     </style>
 </head>
 <body>
 
-    <button class="music-btn" id="mBtn" onclick="toggleMusic()">🎵 <span style="font-size: 10px; display: block;">Play Theme</span></button>
-    
+    <button class="music-btn" onclick="toggleMusic()">🎵</button>
     <audio id="bg-music" loop>
         <source src="https://www.chosic.com/wp-content/uploads/2021/04/Lullaby-Warm-Instrumental-Piano-Version.mp3" type="audio/mpeg">
     </audio>
+
+    <div id="intro-screen" onclick="startExperience()">
+        <div class="umpire">👨‍⚖️🏏</div>
+        <h1 style="color: #ffd700;">Awaiting the Coach...</h1>
+        <p>Click the Umpire to start the match!</p>
+    </div>
 
     <div id="game-ui">
         <h3 id="hint" style="margin: 0;">Hit the ball 5 times, Coach Saab! 🏏</h3>
@@ -179,85 +168,12 @@
 
     <div class="letter-area">
         <div class="envelope" id="env" onclick="openCard()">
-            <div class="heart-seal">❤️</div>
+            <div style="position:absolute; top:40%; left:50%; transform:translate(-50%,-50%); font-size:50px; z-index:23;">❤️</div>
             <div class="card">
                 <div class="squad">
                     <div class="character">🧸</div>
-                    <div class="character char-2">🏆</div>
-                    <div class="character char-3">🏏</div>
+                    <div class="character" style="animation-delay: 0.2s;">🏆</div>
+                    <div class="character" style="animation-delay: 0.4s;">🏏</div>
                 </div>
-                <h2>Happy Birthday Coach Saab</h2>
-                <p>
-                    Wishing you lots of love, laughter and you make life sweeter just by being you. ❤️🎂💫
-                </p>
-                <div style="font-size: 40px; margin-top: 10px;">🌟✨🥳</div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        let score = 0;
-        const ball = document.getElementById('ball-target');
-        const env = document.getElementById('env');
-        const hitsDisplay = document.getElementById('hits');
-        const music = document.getElementById('bg-music');
-        const mBtn = document.getElementById('mBtn');
-
-        function moveBall() {
-            const x = Math.random() * (window.innerWidth - 100);
-            const y = Math.random() * (window.innerHeight - 100);
-            ball.style.left = x + 'px';
-            ball.style.top = y + 'px';
-        }
-
-        ball.addEventListener('click', () => {
-            score++;
-            hitsDisplay.innerText = score;
-            if (score < 5) {
-                moveBall();
-            } else {
-                ball.style.display = 'none';
-                env.classList.add('unlocked');
-                document.getElementById('hint').innerText = "CHAMPION! 💯 Open your letter!";
-                confetti({
-                    particleCount: 250,
-                    spread: 100,
-                    origin: { y: 0.6 },
-                    colors: ['#ff0000', '#ffffff', '#ffd700', '#4caf50']
-                });
-            }
-        });
-
-        function openCard() {
-            if (env.classList.contains('unlocked')) {
-                env.classList.toggle('open');
-            }
-        }
-
-        function toggleMusic() {
-            if (music.paused) {
-                music.play();
-                mBtn.style.animation = "none";
-                mBtn.innerHTML = "⏸ <span style='font-size: 10px; display: block;'>Pause</span>";
-            } else {
-                music.pause();
-                mBtn.innerHTML = "🎵 <span style='font-size: 10px; display: block;'>Play Theme</span>";
-            }
-        }
-
-        // Animated Background
-        const deco = ['🏏', '🏆', '❤️', '⚾', '🎈', '✨'];
-        for (let i = 0; i < 20; i++) {
-            const d = document.createElement('div');
-            d.className = 'floating-emoji';
-            d.innerText = deco[Math.floor(Math.random() * deco.length)];
-            d.style.left = Math.random() * 100 + 'vw';
-            d.style.animationDuration = (Math.random() * 5 + 5) + 's';
-            d.style.animationDelay = (Math.random() * 5) + 's';
-            document.body.appendChild(d);
-        }
-
-        moveBall();
-    </script>
-</body>
-</html>
+                <h2 style="color: #d32f2f;">Happy Birthday Coach Saab</h2>
+                <p>Wishing you lots of love, laughter and you make life sweeter just by being you. ❤️🎂💫</p>
