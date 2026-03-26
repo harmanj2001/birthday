@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Special Message for Shivam 💌</title>
+    <title>For Shivam 🎈</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         :root {
-            --bg-color: #fce4ec;
-            --envelope-color: #ff8fab;
-            --envelope-dark: #fb6f92;
-            --card-color: #ffffff;
+            --primary: #ff4b5c;
+            --secondary: #ff8fab;
+            --bg: #f0f4ff;
         }
 
         body {
@@ -18,196 +18,173 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: var(--bg-color);
-            font-family: 'Georgia', serif;
+            background: var(--bg);
+            font-family: 'Inter', -apple-system, sans-serif;
             overflow: hidden;
         }
 
-        /* Floating Hearts Background */
-        .heart-bg {
+        /* Floating Balloons Background */
+        .balloon {
             position: absolute;
-            top: -10%;
-            font-size: 20px;
-            color: #ffb7c5;
-            animation: fall linear infinite;
-            z-index: 0;
+            bottom: -100px;
+            font-size: 30px;
+            animation: floatUp 8s linear infinite;
+            z-index: 1;
         }
 
-        @keyframes fall {
-            to { transform: translateY(110vh) rotate(360deg); }
+        @keyframes floatUp {
+            to { transform: translateY(-110vh) translateX(50px); opacity: 0; }
         }
 
-        .container {
-            position: relative;
-            z-index: 10;
-        }
+        .container { position: relative; z-index: 10; perspective: 1000px; }
 
         .envelope-wrapper {
             position: relative;
+            width: 320px;
+            height: 220px;
+            background: var(--secondary);
+            border-radius: 0 0 15px 15px;
             cursor: pointer;
-            transition: transform 0.3s;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            transition: all 0.4s ease;
         }
 
         .envelope-wrapper:hover {
-            transform: scale(1.05);
+            transform: translateY(-10px) rotate(1deg);
+            box-shadow: 0 30px 50px rgba(255, 75, 92, 0.2);
         }
 
-        .envelope {
-            position: relative;
-            width: 300px;
-            height: 200px;
-            background: var(--envelope-color);
-            border-radius: 0 0 10px 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-
-        /* The Top Flap */
-        .envelope:before {
+        /* The Flap */
+        .envelope-wrapper:before {
             content: "";
             position: absolute;
-            top: -100px;
+            top: 0;
             left: 0;
-            border-left: 150px solid transparent;
-            border-right: 150px solid transparent;
-            border-bottom: 100px solid var(--envelope-dark);
-            transition: transform 0.5s ease;
-            transform-origin: bottom;
-            z-index: 4;
+            border-left: 160px solid transparent;
+            border-right: 160px solid transparent;
+            border-top: 120px solid #fb6f92;
+            transform-origin: top;
+            transition: all 0.5s ease;
+            z-index: 5;
         }
 
-        .envelope-wrapper.open .envelope:before {
+        .envelope-wrapper.open:before {
             transform: rotateX(180deg);
             z-index: 1;
         }
 
-        /* The Card inside */
+        /* The Card */
         .card {
             position: absolute;
-            width: 270px;
-            height: 350px;
+            width: 290px;
+            height: 380px;
             background: white;
-            top: 10px;
+            bottom: 10px;
             left: 15px;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.8s ease;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             z-index: 2;
             text-align: center;
             box-sizing: border-box;
-            overflow-y: auto;
+            opacity: 0;
         }
 
         .envelope-wrapper.open .card {
-            transform: translateY(-220px);
+            transform: translateY(-280px);
+            opacity: 1;
         }
 
-        h1 { color: #ff4b5c; font-size: 20px; }
-        p { font-size: 15px; line-height: 1.6; color: #444; }
-
-        /* The Heart Seal */
         .heart-seal {
             position: absolute;
-            top: 40%;
+            top: 40px;
             left: 50%;
-            transform: translate(-50%, -50%);
-            width: 40px;
-            height: 40px;
-            background: #ff4b5c;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
             border-radius: 50%;
-            z-index: 5;
+            z-index: 6;
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             color: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            font-size: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            animation: pulse 2s infinite;
         }
 
-        /* Cute Character */
-        .bear {
-            position: absolute;
-            bottom: -50px;
-            right: -60px;
-            font-size: 50px;
-            animation: wave 2s infinite;
+        @keyframes pulse {
+            0% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.1); }
+            100% { transform: translateX(-50%) scale(1); }
         }
 
-        @keyframes wave {
-            0%, 100% { transform: rotate(0deg); }
-            50% { transform: rotate(20deg); }
-        }
+        .envelope-wrapper.open .heart-seal { display: none; }
 
-        /* Music Button */
-        .music-btn {
+        h1 { color: var(--primary); font-size: 22px; margin-top: 0; }
+        p { color: #444; line-height: 1.6; font-size: 15px; }
+
+        .music-toggle {
             position: fixed;
-            bottom: 20px;
-            left: 20px;
+            top: 20px;
+            right: 20px;
             background: white;
             border: none;
-            padding: 10px 15px;
-            border-radius: 20px;
+            padding: 12px;
+            border-radius: 50%;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            font-family: inherit;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            z-index: 100;
         }
+
+        .character { font-size: 40px; margin: 15px 0; }
     </style>
 </head>
 <body>
 
-    <div id="hearts"></div>
-
-    <button class="music-btn" onclick="toggleMusic()">🎵 Play Vibe</button>
-    <audio id="bgMusic" loop>
-        <source src="https://www.chosic.com/wp-content/uploads/2021/04/Lullaby-Warm-Instrumental-Piano-Version.mp3" type="audio/mpeg">
+    <button class="music-toggle" onclick="toggleMusic()">🎵</button>
+    <audio id="bday-music" loop>
+        <source src="https://www.chosic.com/wp-content/uploads/2021/05/Warm-Light.mp3" type="audio/mpeg">
     </audio>
 
     <div class="container">
-        <div class="envelope-wrapper" onclick="this.classList.toggle('open')">
+        <div class="envelope-wrapper" id="envelope" onclick="openLetter()">
             <div class="heart-seal">❤</div>
             <div class="card">
-                <h1>Happy Birthday Shivam 🎂</h1>
-                <p>
-                    I genuinely hope this year brings you growth, happiness, and everything you have been working toward.
-                </p>
-                <p>
-                    You deserve success in every way, and I will always be quietly cheering you on no matter where life takes us.
-                </p>
-                <p>
-                    Even if we don't end up together, I want you to know that knowing you meant something real to me—and it always will.
-                </p>
-                <p style="color:#777; font-size:12px; margin-top:20px;">Enjoy your day 💫</p>
-                <div class="bear">🧸</div>
+                <div class="character">🥳</div>
+                <h1>Happy Birthday Shivam!</h1>
+                <p>I hope this year brings you growth, happiness, and everything you've been working toward.</p>
+                <p>You deserve success in every way, and I'll always be quietly cheering you on.</p>
+                <p>Knowing you meant something real to me—and it always will. ✨</p>
+                <p style="font-size: 12px; color: #999;">(Click anywhere to close)</p>
             </div>
-            <div class="envelope"></div>
         </div>
     </div>
 
     <script>
-        // Create falling hearts
-        function createHeart() {
-            const heart = document.createElement('div');
-            heart.classList.add('heart-bg');
-            heart.innerHTML = '❤';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = Math.random() * 3 + 2 + 's';
-            heart.style.opacity = Math.random();
-            document.getElementById('hearts').appendChild(heart);
-            setTimeout(() => heart.remove(), 5000);
+        // Create random balloons
+        const emojis = ['🎈', '✨', '🎂', '💖', '🍭'];
+        function createBalloon() {
+            const b = document.createElement('div');
+            b.className = 'balloon';
+            b.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+            b.style.left = Math.random() * 100 + 'vw';
+            b.style.animationDuration = (Math.random() * 4 + 6) + 's';
+            document.body.appendChild(b);
+            setTimeout(() => b.remove(), 8000);
         }
-        setInterval(createHeart, 300);
+        setInterval(createBalloon, 800);
 
-        // Music Control
-        function toggleMusic() {
-            const music = document.getElementById('bgMusic');
-            const btn = document.querySelector('.music-btn');
-            if (music.paused) {
-                music.play();
-                btn.innerHTML = '⏸ Pause Vibe';
-            } else {
-                music.pause();
-                btn.innerHTML = '🎵 Play Vibe';
-            }
-        }
-    </script>
-</body>
-</html>
+        function openLetter() {
+            const el = document.getElementById('envelope');
+            const isOpen = el.classList.contains('open');
+            
+            el.classList.toggle('open');
+
+            if (!isOpen) {
+                // Confetti Burst!
+                confetti({
+                    particleCount: 150,
+                    spread: 7
