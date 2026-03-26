@@ -3,9 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Challenge for Shivam 🎂</title>
+    <title>Happy Birthday Coach Saab! 🏏</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
+        :root {
+            --pitch-green: #2d5a27;
+            --ball-red: #d32f2f;
+            --gold: #ffd700;
+        }
+
         body {
             margin: 0;
             height: 100vh;
@@ -13,64 +19,52 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background: radial-gradient(circle, #2c3e50, #000000);
-            font-family: 'Georgia', serif;
+            background: radial-gradient(circle, #4caf50, #1b3312);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden;
             color: white;
         }
 
-        /* Game Overlay */
-        #game-ui {
+        /* Game UI */
+        #game-info {
             position: absolute;
             top: 20px;
             text-align: center;
             z-index: 100;
-            transition: opacity 0.5s;
+            background: rgba(0,0,0,0.5);
+            padding: 15px 25px;
+            border-radius: 30px;
+            border: 2px solid var(--gold);
         }
 
-        #target {
+        #cricket-ball {
             position: absolute;
             font-size: 50px;
             cursor: pointer;
             user-select: none;
-            transition: all 0.2s ease;
             z-index: 99;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
+            transition: transform 0.1s;
         }
 
-        .progress-container {
-            width: 200px;
-            height: 10px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 5px;
-            margin-top: 10px;
-        }
-
-        #progress-bar {
-            width: 0%;
-            height: 100%;
-            background: #ff4b5c;
-            border-radius: 5px;
-            transition: width 0.3s;
-        }
-
-        /* Envelope Styles */
+        /* The Envelope (Red Cricket Ball Style) */
         .envelope-wrapper {
             position: relative;
-            width: 300px;
-            height: 200px;
-            background: #ff8fab;
-            border-radius: 0 0 10px 10px;
+            width: 320px;
+            height: 220px;
+            background: var(--ball-red);
+            border-radius: 0 0 15px 15px;
             cursor: not-allowed;
-            opacity: 0.3;
-            transition: all 0.5s;
-            transform: scale(0.8);
+            opacity: 0.2;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 3px solid rgba(255,255,255,0.2); /* Ball seam look */
         }
 
         .envelope-wrapper.unlocked {
             opacity: 1;
             cursor: pointer;
-            transform: scale(1);
-            box-shadow: 0 0 20px #ff4b5c;
+            transform: scale(1.1);
+            box-shadow: 0 0 30px var(--gold);
         }
 
         .envelope-wrapper:before {
@@ -78,9 +72,9 @@
             position: absolute;
             top: 0;
             left: 0;
-            border-left: 150px solid transparent;
-            border-right: 150px solid transparent;
-            border-top: 100px solid #fb6f92;
+            border-left: 160px solid transparent;
+            border-right: 160px solid transparent;
+            border-top: 120px solid #b71c1c;
             transform-origin: top;
             transition: 0.5s;
             z-index: 5;
@@ -88,114 +82,113 @@
 
         .envelope-wrapper.open:before { transform: rotateX(180deg); z-index: 1; }
 
+        /* The Card */
         .card {
             position: absolute;
-            width: 270px;
-            height: 350px;
+            width: 290px;
+            height: 380px;
             background: white;
             bottom: 10px;
             left: 15px;
-            border-radius: 10px;
-            padding: 20px;
+            border-radius: 12px;
+            padding: 30px;
             transition: 0.8s;
             z-index: 2;
             text-align: center;
             color: #333;
             opacity: 0;
             box-sizing: border-box;
+            border-top: 5px solid var(--ball-red);
         }
 
-        .envelope-wrapper.open .card { transform: translateY(-250px); opacity: 1; }
+        .envelope-wrapper.open .card { transform: translateY(-280px); opacity: 1; }
 
         .heart-seal {
             position: absolute;
-            top: -20px;
+            top: 30%;
             left: 50%;
-            transform: translateX(-50%);
-            font-size: 40px;
+            transform: translate(-50%, -50%);
+            font-size: 45px;
             z-index: 6;
-            color: #ff4b5c;
         }
 
-        /* Twinkling Stars */
-        .star {
+        /* Floating Decorations */
+        .float-item {
             position: absolute;
-            background: white;
-            border-radius: 50%;
-            animation: twinkle var(--duration) infinite;
+            opacity: 0.4;
+            animation: floatAround 10s linear infinite;
         }
 
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 1; }
+        @keyframes floatAround {
+            0% { transform: translateY(110vh) rotate(0deg); }
+            100% { transform: translateY(-10vh) rotate(360deg); }
         }
     </style>
 </head>
 <body>
 
-    <div id="game-ui">
-        <h3 id="instruction">Tap the cake 5 times to unlock your message! 🎂</h3>
-        <div class="progress-container">
-            <div id="progress-bar"></div>
-        </div>
+    <div id="game-info">
+        <h2 id="msg">Coach Saab, hit the ball 5 times! 🏏</h2>
+        <div style="font-size: 20px;">Score: <span id="score">0</span>/5</div>
     </div>
 
-    <div id="target">🎂</div>
+    <div id="cricket-ball">⚾</div>
 
     <div class="envelope-wrapper" id="envelope" onclick="openLetter()">
-        <div class="heart-seal">❤</div>
+        <div class="heart-seal">❤️</div>
         <div class="card">
-            <h2 style="color: #ff4b5c;">Happy Birthday Shivam!</h2>
-            <p style="font-size: 14px; line-height: 1.5;">
-                I hope this year brings you growth, happiness, and everything you've been working toward.
+            <div style="font-size: 40px; margin-bottom: 10px;">🏆</div>
+            <h1 style="color: #d32f2f; margin: 0; font-size: 22px;">Happy Birthday Coach Saab</h1>
+            <p style="font-size: 17px; line-height: 1.6; margin-top: 20px;">
+                Wishing you lots of love, laughter and you make life sweeter just by being you. 🎂💫
             </p>
-            <p style="font-size: 14px;">
-                You deserve success in every way, and I'll always be quietly cheering you on.
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+            <p style="font-size: 14px; color: #666; font-style: italic;">
+                Always cheering for you.
             </p>
-            <p style="font-size: 14px; font-weight: bold;">
-                Knowing you meant something real to me—and it always will. ✨
-            </p>
-            <div style="font-size: 30px; margin-top: 10px;">🧸</div>
+            <div style="font-size: 30px; margin-top: 10px;">🏏💖</div>
         </div>
     </div>
 
     <script>
-        let score = 0;
-        const target = document.getElementById('target');
-        const progressBar = document.getElementById('progress-bar');
+        let clicks = 0;
+        const ball = document.getElementById('cricket-ball');
+        const scoreDisplay = document.getElementById('score');
         const envelope = document.getElementById('envelope');
-        const gameUI = document.getElementById('game-ui');
+        const msg = document.getElementById('msg');
 
-        // Move the cake to a random spot
-        function moveTarget() {
+        function moveBall() {
             const x = Math.random() * (window.innerWidth - 100);
             const y = Math.random() * (window.innerHeight - 100);
-            target.style.left = x + 'px';
-            target.style.top = y + 'px';
+            ball.style.left = x + 'px';
+            ball.style.top = y + 'px';
         }
 
-        target.addEventListener('click', () => {
-            score++;
-            progressBar.style.width = (score / 5) * 100 + '%';
+        ball.addEventListener('click', () => {
+            clicks++;
+            scoreDisplay.innerText = clicks;
             
-            if (score < 5) {
-                moveTarget();
+            // Add a "hit" effect
+            ball.style.transform = "scale(1.5)";
+            setTimeout(() => ball.style.transform = "scale(1)", 100);
+
+            if (clicks < 5) {
+                moveBall();
             } else {
-                unlock();
+                finishGame();
             }
         });
 
-        function unlock() {
-            target.style.display = 'none';
-            gameUI.style.opacity = '0';
+        function finishGame() {
+            ball.style.display = 'none';
+            msg.innerText = "Century! 💯 Click the ball to open!";
             envelope.classList.add('unlocked');
-            document.getElementById('instruction').innerText = "Unlocked! Click the envelope.";
-            gameUI.style.opacity = '1';
             
             confetti({
-                particleCount: 150,
-                spread: 100,
-                origin: { y: 0.6 }
+                particleCount: 200,
+                spread: 90,
+                origin: { y: 0.6 },
+                colors: ['#ff0000', '#ffffff', '#4caf50', '#ffd700']
             });
         }
 
@@ -205,20 +198,20 @@
             }
         }
 
-        // Create Stars
-        for (let i = 0; i < 100; i++) {
-            const star = document.createElement('div');
-            star.className = 'star';
-            const size = Math.random() * 3;
-            star.style.width = size + 'px';
-            star.style.height = size + 'px';
-            star.style.left = Math.random() * 100 + 'vw';
-            star.style.top = Math.random() * 100 + 'vh';
-            star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
-            document.body.appendChild(star);
+        // Floating Background Items (Balls and Hearts)
+        const items = ['🏏', '⚾', '❤️', '✨', '🏏'];
+        for (let i = 0; i < 20; i++) {
+            const div = document.createElement('div');
+            div.className = 'float-item';
+            div.innerText = items[Math.floor(Math.random() * items.length)];
+            div.style.left = Math.random() * 100 + 'vw';
+            div.style.fontSize = (Math.random() * 20 + 20) + 'px';
+            div.style.animationDuration = (Math.random() * 5 + 5) + 's';
+            div.style.animationDelay = (Math.random() * 5) + 's';
+            document.body.appendChild(div);
         }
 
-        moveTarget();
+        moveBall();
     </script>
 </body>
 </html>
